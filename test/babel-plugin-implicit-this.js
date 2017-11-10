@@ -32,27 +32,47 @@ describe('babel-plugin-implicit-this', () => {
   })
 
   it('should not rewrite function short hand', () => {
-    const code = `const x = { create() { console.log('hey'); } }`
+    const code = `const x = { create() { console.log('hey'); } };`
+    expect(transform(code).code).to.equalIgnoreSpaces(code)
+  })
+
+  it('should not transform module.exports', () => {
+    const code = 'module.exports = {};'
     expect(transform(code).code).to.eq(code)
   })
 
-  /*it('should not transform module.exports', () => {
-    const code = 'module.exports = {}'
+  it('should transform arbitrary object expressions', () => {
+    const code = `foo = { bar: 10 };`
+    expect(transform(code).code).to.eq(`this.foo = { bar: 10 };`)
+  })
+
+  it('should not transform Object statements', () => {
+    const code = `Object.assign({}, { a: 1, b: 10 });`
     expect(transform(code).code).to.eq(code)
   })
 
-  it('should not transform require statements', () => {
-    const code = `const fs = require('fs')`
+  it('should not transform console statements', () => {
+    const code = `console.log('Hello!');`
     expect(transform(code).code).to.eq(code)
   })
 
   it('should not transform window statements', () => {
-    const code = `console.log(window.location)`
+    const code = `window.location;`
     expect(transform(code).code).to.eq(code)
   })
 
-  it('should not transform Object statements', () => {
-    const code = `Object.assign({}, { a: 1 })`
+  /*it('should respect @global comments', () => {
+    const code = `// @global x\nx = 10`
     expect(transform(code).code).to.eq(code)
+  })*/
+
+  /*it('should not transform require statements', () => {
+    const compile = source =>
+      babel.transform(source, {
+        plugins: [plugin],
+        presets: [['env', { targets: { node: 'current' } }]]
+      })
+    const code = `const fs = require('fs')`
+    expect(compile(code).code).to.eq(code)
   })*/
 })
