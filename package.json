@@ -41,5 +41,8 @@
     "lint-staged": "^4.3.0",
     "mocha": "^2.4.5",
     "prettier": "^1.8.2"
+  },
+  "dependencies": {
+    "globals": "^10.3.0"
   }
 }
