@@ -4,19 +4,22 @@
   "description": "Transform global variables to implicit this expressions",
   "main": "lib/index.js",
   "scripts": {
-    "prepublish": "npm run test",
+    "format":
+      "yarn f $(git ls-files -c -m | grep '\\.\\(jsx\\?\\|json\\|scss\\)$' | tr '\n' ' ')",
+    "f":
+      "node_modules/.bin/prettier --single-quote --write --no-semi --tab-width=2",
+    "precommit": "lint-staged",
     "test": "mocha",
-    "watch": "npm test -- -w",
     "lint": "eslint **/*.js --quiet"
+  },
+  "lint-staged": {
+    "*.{js,jsx,json,scss}": ["yarn f", "git add"]
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/miraks/babel-plugin-strict-equality"
   },
-  "keywords": [
-    "babel",
-    "babel-plugin"
-  ],
+  "keywords": ["babel", "babel-plugin"],
   "author": "Nick Aversano",
   "license": "MIT",
   "bugs": {
@@ -30,8 +33,12 @@
     "babel-preset-es2015": "^6.5.0",
     "babel-register": "^6.5.2",
     "chai": "^3.5.0",
+    "chai-string": "^1.4.0",
     "escope": "^3.6.0",
     "eslint": "^4.10.0",
-    "mocha": "^2.4.5"
+    "husky": "^0.14.3",
+    "lint-staged": "^4.3.0",
+    "mocha": "^2.4.5",
+    "prettier": "^1.8.2"
   }
 }
