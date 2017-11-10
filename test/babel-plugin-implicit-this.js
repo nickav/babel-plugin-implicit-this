@@ -61,18 +61,23 @@ describe('babel-plugin-implicit-this', () => {
     expect(transform(code).code).to.eq(code)
   })
 
-  /*it('should respect @global comments', () => {
-    const code = `// @global x\nx = 10`
+  it('should respect global comments', () => {
+    const code = `// global x\nx = 10;`
     expect(transform(code).code).to.eq(code)
-  })*/
+  })
+
+  it('should respect multiple global comments', () => {
+    const code = `/* global x, y */\nx = y + 10;`
+    expect(transform(code).code).to.eq(code)
+  })
 
   /*it('should not transform require statements', () => {
     const compile = source =>
       babel.transform(source, {
         plugins: [plugin],
-        presets: [['env', { targets: { node: 'current' } }]]
+        //presets: [['env', { targets: { node: 'current' } }]]
       })
-    const code = `const fs = require('fs')`
-    expect(compile(code).code).to.eq(code)
+    const code = `'use strict'; const fs = require('fs');`
+    expect(compile(code).code).to.equalIgnoreSpaces(code)
   })*/
 })
