@@ -1,12 +1,24 @@
-# babel-plugin-strict-equality
+# babel-plugin-implicit-this
 
-Transform `==` and `!=` to `===` and `!==`
+Ditch your global variables with this syntactic sugar
+
+Transforms globals to implicit this expressions:
+
+Before:
+```javascript
+x = 10;
+```
+
+After:
+```javascript
+this.x = 10;
+```
 
 
 ## Installation
 
 ```sh
-$ npm install --save-dev babel-plugin-strict-equality
+$ npm install --save-dev babel-plugin-implicit-this
 ```
 
 ## Usage
@@ -17,21 +29,21 @@ $ npm install --save-dev babel-plugin-strict-equality
 
 ```js
 {
-  "plugins": ["strict-equality"]
+  "plugins": ["implicit-this"]
 }
 ```
 
 ### Via CLI
 
 ```sh
-$ babel --plugins strict-equality script.js
+$ babel --plugins implicit-this script.js
 ```
 
 ### Via Node API
 
 ```javascript
 require("babel-core").transform("code", {
-  plugins: ["strict-equality"]
+  plugins: ["implicit-this"]
 });
 ```
 
