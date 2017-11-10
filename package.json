@@ -1,13 +1,11 @@
 {
-  "name": "babel-plugin-strict-equality",
+  "name": "babel-plugin-implicit-this",
   "version": "1.0.0",
-  "description": "Transform `==` and `!=` to `===` and `!==`",
+  "description": "Transform global variables to implicit this expressions",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src/index.js -o lib/index.js",
     "prepublish": "npm run test",
-    "pretest": "npm run lint",
-    "test": "mocha --compilers js:babel-register",
+    "test": "mocha",
     "watch": "npm test -- -w",
     "lint": "eslint **/*.js --quiet"
   },
@@ -19,12 +17,12 @@
     "babel",
     "babel-plugin"
   ],
-  "author": "Alexey Volodkin <a@vldkn.net>",
+  "author": "Nick Aversano",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/miraks/babel-plugin-strict-equality/issues"
+    "url": "https://github.com/nickaversano/babel-plugin-implicit-this/issues"
   },
-  "homepage": "https://github.com/miraks/babel-plugin-strict-equality",
+  "homepage": "https://github.com/nickaversano/babel-plugin-implicit-this",
   "devDependencies": {
     "babel-cli": "^6.5.1",
     "babel-core": "^6.5.2",
@@ -32,7 +30,8 @@
     "babel-preset-es2015": "^6.5.0",
     "babel-register": "^6.5.2",
     "chai": "^3.5.0",
-    "eslint": "^2.2.0",
+    "escope": "^3.6.0",
+    "eslint": "^4.10.0",
     "mocha": "^2.4.5"
   }
 }
