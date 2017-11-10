@@ -14,6 +14,16 @@ describe('babel-plugin-implicit-this', () => {
     expect(transform('x = 10;').code).to.eq('this.x = 10;')
   })
 
+  it('should transform member expressions', () => {
+    const code = `foo.bar(10);`
+    expect(transform(code).code).to.eq(`this.foo.bar(10);`)
+  })
+
+  it('should transform nested member expressions', () => {
+    const code = `hello.dear.sir();`
+    expect(transform(code).code).to.eq(`this.hello.dear.sir();`)
+  })
+
   it('should not transform defined variables', () => {
     const code = 'const x = 0;'
     expect(transform(code).code).to.eq(code)
@@ -32,7 +42,7 @@ describe('babel-plugin-implicit-this', () => {
   })
 
   it('should not rewrite function short hand', () => {
-    const code = `const x = { create() { console.log('hey'); } };`
+    const code = `const x = { create() { return 'hey'; } };`
     expect(transform(code).code).to.equalIgnoreSpaces(code)
   })
 
@@ -71,11 +81,16 @@ describe('babel-plugin-implicit-this', () => {
     expect(transform(code).code).to.eq(code)
   })
 
+  it('should not transform built-in things', () => {
+    const code = `Array(10);\nNaN;\nJSON.parse("{}");\n__dirname;\nsetTimeout();\nundefined;`
+    expect(transform(code).code).to.eq(code)
+  })
+
   /*it('should not transform require statements', () => {
     const compile = source =>
       babel.transform(source, {
         plugins: [plugin],
-        //presets: [['env', { targets: { node: 'current' } }]]
+        presets: [['env', { targets: { node: 'current' } }]]
       })
     const code = `'use strict'; const fs = require('fs');`
     expect(compile(code).code).to.equalIgnoreSpaces(code)
