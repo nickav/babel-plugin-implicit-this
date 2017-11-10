@@ -3,7 +3,8 @@ const plugin = require('../lib')
 const chai = require('chai')
 chai.use(require('chai-string'))
 const { expect } = chai
-const transform = source => babel.transform(source, { plugins: [plugin] })
+const transform = (source, options) =>
+  babel.transform(source, { plugins: [[plugin, options]] })
 
 describe('babel-plugin-implicit-this', () => {
   it('transforms undefined variables', () => {
@@ -66,14 +67,28 @@ describe('babel-plugin-implicit-this', () => {
     expect(transform(code).code).to.eq(code)
   })
 
-  it.skip('should not transform global browser variables', () => {
+  it('should not transform global browser variables', () => {
     const code = `console.log('Hello!');\nwindow.location;`
-    expect(transform(code).code).to.eq(code)
+    expect(transform(code, { env: 'browser' }).code).to.eq(code)
   })
 
-  it.skip('should not transform Node variables', () => {
-    const code = `require('fs');Array(10);\nNaN;\nJSON.parse("{}");\n__dirname;\nsetTimeout();\nundefined;\nconsole.log('foo');\nmodule.exports = {};`
-    expect(transform(code).code).to.eq(code)
+  it('should not transform Node variables', () => {
+    const code = `
+    require('fs');
+    Array(10);
+    NaN;
+    JSON.parse("{}");
+    __dirname;
+    setTimeout();
+    undefined;
+    console.log('foo');
+    module.exports = {};`
+    expect(transform(code, { env: 'node' }).code).to.equalIgnoreSpaces(code)
+  })
+
+  it('should transform Node vars without the env', () => {
+    const code = `require('fs');`
+    expect(transform(code).code).to.eq(`this.require('fs');`)
   })
 
   /*it('should not transform require statements', () => {
