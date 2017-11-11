@@ -91,13 +91,8 @@ describe('babel-plugin-implicit-this', () => {
     expect(transform(code).code).to.eq(`this.require('fs');`)
   })
 
-  /*it('should not transform require statements', () => {
-    const compile = source =>
-      babel.transform(source, {
-        plugins: [plugin],
-        presets: [['env', { targets: { node: 'current' } }]]
-      })
-    const code = `'use strict'; const fs = require('fs');`
-    expect(compile(code).code).to.equalIgnoreSpaces(code)
-  })*/
+  it('should read env from comments', () => {
+    const code = `/* env browser */\nwindow.location;`
+    expect(transform(code).code).to.eq(code)
+  })
 })
