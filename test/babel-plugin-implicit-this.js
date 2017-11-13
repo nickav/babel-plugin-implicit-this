@@ -55,9 +55,14 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform(code).code).to.equalIgnoreSpaces(code)
     })
 
-    it('Object statements', () => {
+    it('object statements', () => {
       const code = `Object.assign({}, { a: 1, b: 10 });`
       expect(transform(code).code).to.eq(code)
+    })
+
+    it('object properties', () => {
+      const code = `var context = {}; context.id;`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
     })
   })
 
@@ -76,13 +81,6 @@ describe('babel-plugin-implicit-this', () => {
       const code = `foo_global = 'bar';`
       expect(
         transform(code, { globals: './test/globals.json' }).code
-      ).to.equalIgnoreSpaces(code)
-    })
-
-    it('should load a file implying json', () => {
-      const code = `foo_global = 'bar';`
-      expect(
-        transform(code, { globals: './test/globals' }).code
       ).to.equalIgnoreSpaces(code)
     })
   })
