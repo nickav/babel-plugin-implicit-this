@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-implicit-this",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Transform global variables to implicit this expressions",
   "main": "lib/index.js",
   "scripts": {
