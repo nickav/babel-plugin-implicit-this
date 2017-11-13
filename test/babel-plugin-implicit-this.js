@@ -21,6 +21,11 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform(code).code).to.eq(`this.foo.bar(10);`)
     })
 
+    it('multiple member expressions', () => {
+      const code = `y.x.z = 2;a.b.c = 1;`
+      expect(transform(code).code).to.eq(`this.y.x.z = 2;this.a.b.c = 1;`)
+    })
+
     it('nested member expressions', () => {
       const code = `hello.dear.sir();`
       expect(transform(code).code).to.eq(`this.hello.dear.sir();`)
@@ -34,8 +39,15 @@ describe('babel-plugin-implicit-this', () => {
     })
 
     it('arbitrary object expressions', () => {
-      const code = `foo = { bar: 10 };`
-      expect(transform(code).code).to.eq(`this.foo = { bar: 10 };`)
+      const code = `var car = 1; var obj = { bar: 10, moo: car };`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+
+    it('arbitrary object expressions with globals', () => {
+      const code = `foo = { bar: 10, moo: car };`
+      expect(transform(code).code).to.eq(
+        `this.foo = { bar: 10, moo: this.car };`
+      )
     })
   })
 
@@ -62,6 +74,11 @@ describe('babel-plugin-implicit-this', () => {
 
     it('object properties', () => {
       const code = `var context = {}; context.id;`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+
+    it('chained function calls', () => {
+      const code = `[1,2,3].filter(e => e).map(e => e * 2);`
       expect(transform(code).code).to.equalIgnoreSpaces(code)
     })
   })
