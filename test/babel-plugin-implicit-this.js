@@ -94,6 +94,14 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform(code).code).to.eq(code)
     })
 
+    it('should ignore other comments', () => {
+      const code = `
+      // global Sprite
+      // some other comment
+      var spr = Sprite;`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+
     it('should load a file if file is specified', () => {
       const code = `foo_global = 'bar';`
       expect(
