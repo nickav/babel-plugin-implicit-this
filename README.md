@@ -29,7 +29,7 @@ $ npm install --save-dev babel-plugin-implicit-this
 
 ```js
 {
-  "plugins": ["implicit-this"]
+  "plugins": ["implicit-this", { "env": "node", "globals": "./path/to/globals.json" }]
 }
 ```
 
@@ -42,8 +42,12 @@ $ babel --plugins implicit-this script.js
 ### Via Node API
 
 ```javascript
+const globals = {
+  foo_global: false
+}
+
 require("babel-core").transform("code", {
-  plugins: ["implicit-this"]
+  plugins: ["implicit-this", { env: 'browser', globals }]
 });
 ```
 
