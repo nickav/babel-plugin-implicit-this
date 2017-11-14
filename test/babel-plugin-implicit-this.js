@@ -114,7 +114,8 @@ describe('babel-plugin-implicit-this', () => {
       // test destructuring and optional args
       function a(args = {}) { return args; }
       function spread(...args) { return args.join(' '); }
-      Object.entries({}).map(([k, v]) => k)
+      const assets = {};
+      Object.entries(assets).map(([k, v]) => console.log(k, v))
 
       // test classes
       class Instance extends Object {
