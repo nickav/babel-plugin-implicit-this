@@ -3,6 +3,7 @@ const plugin = require('../lib')
 const chai = require('chai')
 chai.use(require('chai-string'))
 const { expect } = chai
+
 const transform = (source, options) =>
   babel.transform(source, { plugins: [[plugin, options]] })
 
@@ -109,17 +110,34 @@ describe('babel-plugin-implicit-this', () => {
 
   describe('presets env', () => {
     it('argument destructuring', () => {
-      const code = `function a(args = {}) { return args; }`
-      const expected = `"use strict";
-      function a() {
-      var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      return args;
-    }`
-      const result = babel.transform(code, {
-        presets: 'env',
-        plugins: [plugin]
-      })
-      expect(result.code).to.equalIgnoreSpaces(expected)
+      const code = `
+      // test destructuring and optional args
+      function a(args = {}) { return args; }
+      function spread(...args) { return args.join(' '); }
+      Object.entries({}).map(([k, v]) => k)
+
+      // test classes
+      class Instance extends Object {
+        constructor() {
+          super()
+          foo = 'bar'
+        }
+        create() {
+          return foo;
+        }
+        get thing() {
+          return foo;
+        }
+      }
+
+      module.exports = Instance
+      `
+      const compileWithEnv = () =>
+        babel.transform(code, {
+          presets: 'env',
+          plugins: [plugin]
+        })
+      expect(compileWithEnv).to.not.throw()
     })
   })
 
