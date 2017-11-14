@@ -38,15 +38,17 @@ describe('babel-plugin-implicit-this', () => {
       )
     })
 
-    it('arbitrary object expressions', () => {
-      const code = `var car = 1; var obj = { bar: 10, moo: car };`
-      expect(transform(code).code).to.equalIgnoreSpaces(code)
-    })
-
     it('arbitrary object expressions with globals', () => {
       const code = `foo = { bar: 10, moo: car };`
       expect(transform(code).code).to.eq(
         `this.foo = { bar: 10, moo: this.car };`
+      )
+    })
+
+    it('repeat identifiers', () => {
+      const code = `function foo(a) { this.a = a; } function bar() { return a; }`
+      expect(transform(code).code).to.equalIgnoreSpaces(
+        `function foo(a) { this.a = a; } function bar() { return this.a; }`
       )
     })
   })
@@ -70,6 +72,11 @@ describe('babel-plugin-implicit-this', () => {
     it('object statements', () => {
       const code = `Object.assign({}, { a: 1, b: 10 });`
       expect(transform(code).code).to.eq(code)
+    })
+
+    it('arbitrary object expressions', () => {
+      const code = `var car = 1; var obj = { bar: 10, moo: car };`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
     })
 
     it('object properties', () => {
