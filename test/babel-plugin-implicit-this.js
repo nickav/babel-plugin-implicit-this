@@ -22,8 +22,10 @@ describe('babel-plugin-implicit-this', () => {
     })
 
     it('multiple member expressions', () => {
-      const code = `y.x.z = 2;a.b.c = 1;`
-      expect(transform(code).code).to.eq(`this.y.x.z = 2;this.a.b.c = 1;`)
+      const code = `y.x.z = 2;a.b.c = foo;`
+      expect(transform(code).code).to.eq(
+        `this.y.x.z = 2;this.a.b.c = this.foo;`
+      )
     })
 
     it('nested member expressions', () => {
@@ -50,6 +52,11 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform(code).code).to.equalIgnoreSpaces(
         `function foo(a) { this.a = a; } function bar() { return this.a; }`
       )
+    })
+
+    it('function arguments', () => {
+      const code = `Object.keys(x);`
+      expect(transform(code).code).to.eq(`Object.keys(this.x);`)
     })
   })
 
@@ -87,6 +94,32 @@ describe('babel-plugin-implicit-this', () => {
     it('chained function calls', () => {
       const code = `[1,2,3].filter(e => e).map(e => e * 2);`
       expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+
+    it('comma-separated variable declarations', () => {
+      const code = `var _ref2 = [1, 2], k = _ref2[0], v = _ref2[1];`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+
+    it('arrow functions', () => {
+      const code = `const squareArr = arr => arr.map(x => x * x);`
+      expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+  })
+
+  describe('presets env', () => {
+    it('argument destructuring', () => {
+      const code = `function a(args = {}) { return args; }`
+      const expected = `"use strict";
+      function a() {
+      var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      return args;
+    }`
+      const result = babel.transform(code, {
+        presets: 'env',
+        plugins: [plugin]
+      })
+      expect(result.code).to.equalIgnoreSpaces(expected)
     })
   })
 
