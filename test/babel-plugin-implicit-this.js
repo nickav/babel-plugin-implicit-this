@@ -17,6 +17,10 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform('x = 10;').code).to.eq('this.x = 10;')
     })
 
+    it('variable declarations', () => {
+      expect(transform('var x = y;').code).to.eq(`var x = this.y;`)
+    })
+
     it('member expressions', () => {
       const code = `foo.bar(10);`
       expect(transform(code).code).to.eq(`this.foo.bar(10);`)
