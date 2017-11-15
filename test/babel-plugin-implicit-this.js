@@ -123,15 +123,18 @@ describe('babel-plugin-implicit-this', () => {
 
       // test classes
       class Instance extends Object {
-        constructor() {
-          super()
+        constructor(x, y) {
+          super(x, y)
+          this.x = x
+          this.y = y
           foo = 'bar'
+          bar = foo
         }
         create() {
           return foo;
         }
         get thing() {
-          return foo;
+          return foo + bar;
         }
       }
 
@@ -142,6 +145,7 @@ describe('babel-plugin-implicit-this', () => {
           presets: 'env',
           plugins: [plugin]
         })
+      //console.log(compileWithEnv().code)
       expect(compileWithEnv).to.not.throw()
     })
   })
