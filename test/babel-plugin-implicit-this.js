@@ -21,6 +21,10 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform('var x = y;').code).to.eq(`var x = this.y;`)
     })
 
+    it('variable declarations with implicit vars', () => {
+      expect(transform('var x = x;').code).to.eq(`var x = this.x;`)
+    })
+
     it('member expressions', () => {
       const code = `foo.bar(10);`
       expect(transform(code).code).to.eq(`this.foo.bar(10);`)
@@ -172,7 +176,7 @@ describe('babel-plugin-implicit-this', () => {
     it('should load a file if file is specified', () => {
       const code = `foo_global = 'bar';`
       expect(
-        transform(code, { globals: './test/globals.json' }).code
+        transform(code, { env: ['node'], globals: './test/globals.json' }).code
       ).to.equalIgnoreSpaces(code)
     })
   })
