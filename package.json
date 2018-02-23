@@ -6,8 +6,7 @@
   "scripts": {
     "format":
       "yarn f $(git ls-files -c -m | grep '\\.\\(jsx\\?\\|json\\|scss\\)$' | tr '\n' ' ')",
-    "f":
-      "node_modules/.bin/prettier --single-quote --write --no-semi --tab-width=2",
+    "f": "node_modules/.bin/prettier --config .prettierrc --write",
     "precommit": "lint-staged",
     "test": "mocha",
     "lint": "eslint **/*.js --quiet"
@@ -35,7 +34,6 @@
     "babel-register": "^6.5.2",
     "chai": "^3.5.0",
     "chai-string": "^1.4.0",
-    "escope": "^3.6.0",
     "eslint": "^4.10.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.3.0",
