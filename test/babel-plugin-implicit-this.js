@@ -32,11 +32,9 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform('var x = y;').code).to.eq(`var x = this.y;`)
     })
 
-    /*
     it('variable declarations with implicit vars', () => {
       expect(transform('var x = x;').code).to.eq(`var x = this.x;`)
     })
-    */
 
     it('member expressions', () => {
       const code = `foo.bar(10);`
@@ -107,9 +105,9 @@ describe('babel-plugin-implicit-this', () => {
       const code = `const x = { create() { return 'hey'; } };`
       expect(transform(code).code).to.equalIgnoreSpaces(code)
 
-      expect(transform(`const a = { create: function() {} };`).code).to.equalIgnoreSpaces(
-        `const a = { create: function() { } };`
-      )
+      expect(
+        transform(`const a = { create: function() {} };`).code
+      ).to.equalIgnoreSpaces(`const a = { create: function() { } };`)
     })
 
     it('object statements', () => {
@@ -120,6 +118,11 @@ describe('babel-plugin-implicit-this', () => {
     it('arbitrary object expressions', () => {
       const code = `var car = 1; var obj = { bar: 10, moo: car };`
       expect(transform(code).code).to.equalIgnoreSpaces(code)
+    })
+
+    it('variable declarations with implicit vars already defined', () => {
+      const code = `var y = 10;var x = y;`
+      expect(transform(code).code).to.eq(code)
     })
 
     it('object properties', () => {
