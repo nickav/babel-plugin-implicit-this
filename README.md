@@ -51,6 +51,12 @@ require("babel-core").transform("code", {
 });
 ```
 
-# License
+## License
 
 MIT
+
+
+## TODO
+
+- add "strict" where declarations are only allowed in certain files
+- add `const self = this` at the top of instance methods

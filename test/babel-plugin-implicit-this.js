@@ -13,17 +13,30 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform('a;').code).to.eq('this.a;')
     })
 
+    it('simple object expressions', () => {
+      expect(transform(`{x: y}`).code).to.eq(`{\n  x: this.y;\n}`)
+      expect(transform(`({x: y})`).code).to.eq(`({ x: this.y });`)
+    })
+
+    it('advanced object expressions', () => {
+      expect(transform(`({[x]: y})`).code).to.eq(`({ [this.x]: this.y });`)
+      expect(transform(`({[x()]: 0})`).code).to.eq(`({ [this.x()]: 0 });`)
+    })
+
     it('basic assignments', () => {
       expect(transform('x = 10;').code).to.eq('this.x = 10;')
+      expect(transform('x = y = 10;').code).to.eq('this.x = this.y = 10;')
     })
 
     it('variable declarations', () => {
       expect(transform('var x = y;').code).to.eq(`var x = this.y;`)
     })
 
+    /*
     it('variable declarations with implicit vars', () => {
       expect(transform('var x = x;').code).to.eq(`var x = this.x;`)
     })
+    */
 
     it('member expressions', () => {
       const code = `foo.bar(10);`
@@ -61,15 +74,25 @@ describe('babel-plugin-implicit-this', () => {
       expect(transform(code).code).to.equalIgnoreSpaces(
         `function foo(a) { this.a = a; } function bar() { return this.a; }`
       )
+      expect(
+        transform(`function foo(a, b) { return a + c; }`).code
+      ).to.equalIgnoreSpaces(`function foo(a, b) { return a + this.c; }`)
     })
 
     it('function arguments', () => {
-      const code = `Object.keys(x);`
-      expect(transform(code).code).to.eq(`Object.keys(this.x);`)
+      expect(transform(`Object.keys(x);`).code).to.eq(`Object.keys(this.x);`)
+      expect(transform(`Object.keys(x).map(y => y);`).code).to.eq(
+        `Object.keys(this.x).map(y => y);`
+      )
+      expect(transform(`[].map(y => x);`).code).to.eq(`[].map(y => this.x);`)
     })
   })
 
   describe('should not transform', () => {
+    it('this identifiers', () => {
+      expect(transform('this.a;').code).to.eq('this.a;')
+    })
+
     it('defined variables', () => {
       const code = 'const x = 0;'
       expect(transform(code).code).to.eq(code)
@@ -83,6 +106,10 @@ describe('babel-plugin-implicit-this', () => {
     it('function short hand', () => {
       const code = `const x = { create() { return 'hey'; } };`
       expect(transform(code).code).to.equalIgnoreSpaces(code)
+
+      expect(transform(`const a = { create: function() {} };`).code).to.equalIgnoreSpaces(
+        `const a = { create: function() { } };`
+      )
     })
 
     it('object statements', () => {
