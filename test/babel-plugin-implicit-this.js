@@ -84,6 +84,12 @@ describe('babel-plugin-implicit-this', () => {
       )
       expect(transform(`[].map(y => x);`).code).to.eq(`[].map(y => this.x);`)
     })
+
+    it('array index expressions', () => {
+      expect(transform(`history[history_index] = 10;`).code).to.eq(
+        `this.history[this.history_index] = 10;`
+      )
+    })
   })
 
   describe('should not transform', () => {
