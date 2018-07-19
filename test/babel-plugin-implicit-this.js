@@ -90,6 +90,10 @@ describe('babel-plugin-implicit-this', () => {
         `this.history[this.history_index] = 10;`
       )
     })
+
+    it('this array access', () => {
+      expect(transform(`this[foo] = 10;`).code).to.eq(`this[this.foo] = 10;`)
+    })
   })
 
   describe('should not transform', () => {
