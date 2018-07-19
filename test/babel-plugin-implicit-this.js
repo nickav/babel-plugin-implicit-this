@@ -267,4 +267,13 @@ describe('babel-plugin-implicit-this', () => {
       })
     })
   })
+
+  describe('classes', () => {
+    it('should only transform things inside a class', () => {
+      const code = `outside = 10; class Foo { bar() { x = 10; } }`
+      expect(transform(code, { classMethod: true }).code).to.equalIgnoreSpaces(
+        `outside = 10; class Foo { bar() { this.x = 10; } }`
+      )
+    })
+  })
 })
